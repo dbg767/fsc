@@ -33,19 +33,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         antMatchers("/",
                     "/js/**",
                     "/css/**",
-                    "/webjars/**").permitAll().
-        antMatchers("/user/**").hasAnyRole("USER", "ADMIN").
-        antMatchers("/admin").hasRole("ADMIN").
+                    "/webjars/**",
+            "/asset/**",
+            "/customer/**",
+            "/order/**").permitAll().
+        //temporarily comment for developement
+//        antMatchers("/asset/**", "/customer/**", "/order/**", "/test").hasAnyRole("USER", "ADMIN").
+//        antMatchers("/settings/**").hasRole("ADMIN").
         anyRequest().authenticated().
         and().addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).
-        formLogin().loginPage("/login").permitAll().
-        and().logout();
+        formLogin().loginPage("/login").failureUrl("/login-error").defaultSuccessUrl("/index").
+        permitAll().and().logout().permitAll();
   }
 
   @Autowired
   protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    auth.userDetailsService(fscUserDetailsService).passwordEncoder(passwordEncoder);
+//    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//    auth.userDetailsService(fscUserDetailsService).passwordEncoder(passwordEncoder);
+    auth.userDetailsService(fscUserDetailsService);
+
   }
 
   @Bean
